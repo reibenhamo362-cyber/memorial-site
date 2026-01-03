@@ -4,6 +4,13 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'שירות לא זמין' },
+        { status: 500 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')
 

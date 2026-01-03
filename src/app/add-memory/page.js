@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function AddMemoryPage() {
+function AddMemoryForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const soldierSlug = searchParams.get('soldier')
@@ -304,6 +304,18 @@ export default function AddMemoryPage() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function AddMemoryPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+        <p className="text-gray-600">טוען...</p>
+      </div>
+    }>
+      <AddMemoryForm />
+    </Suspense>
   )
 }
 

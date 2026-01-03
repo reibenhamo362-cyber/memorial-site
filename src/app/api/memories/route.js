@@ -4,6 +4,13 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'שירות לא זמין' },
+        { status: 500 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const soldierId = searchParams.get('soldier_id')
     const status = searchParams.get('status') || 'approved'
@@ -51,6 +58,13 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'שדות חובה חסרים' },
         { status: 400 }
+      )
+    }
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'שירות לא זמין' },
+        { status: 500 }
       )
     }
 

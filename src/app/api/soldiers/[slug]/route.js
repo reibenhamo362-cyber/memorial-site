@@ -4,6 +4,13 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request, { params }) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'שירות לא זמין' },
+        { status: 500 }
+      )
+    }
+
     const { slug } = params
 
     // Get soldier by slug
