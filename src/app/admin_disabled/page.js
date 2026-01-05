@@ -20,15 +20,16 @@ export default function AdminPage() {
     gallery_images: []
   })
 
-  // Add Memory Form
+  // Add Memory Form (FREE TEXT)
   const [memoryForm, setMemoryForm] = useState({
-    soldier_id: '',
+    soldier_name: '',
+    unit: '',
     author_name: '',
     text: '',
     image: null
   })
 
-  // Fetch soldiers list
+  // Fetch soldiers list (still useful for other places, not used in memory dropdown anymore)
   useEffect(() => {
     fetchSoldiers()
   }, [])
@@ -149,7 +150,8 @@ export default function AdminPage() {
     setSuccess('')
     setLoading(true)
 
-    if (!memoryForm.soldier_id || !memoryForm.author_name || !memoryForm.text) {
+    // NEW validation (no soldier_id)
+    if (!memoryForm.soldier_name || !memoryForm.author_name || !memoryForm.text) {
       setError('אנא מלא את כל השדות החובה')
       setLoading(false)
       return
@@ -157,7 +159,9 @@ export default function AdminPage() {
 
     try {
       const formData = new FormData()
-      formData.append('soldier_id', memoryForm.soldier_id)
+      // NEW fields
+      formData.append('soldier_name', memoryForm.soldier_name.trim())
+      formData.append('unit', (memoryForm.unit || '').trim())
       formData.append('author_name', memoryForm.author_name.trim())
       formData.append('text', memoryForm.text.trim())
       if (memoryForm.image) {
@@ -177,7 +181,8 @@ export default function AdminPage() {
 
       setSuccess('הזיכרון נוסף בהצלחה!')
       setMemoryForm({
-        soldier_id: '',
+        soldier_name: '',
+        unit: '',
         author_name: '',
         text: '',
         image: null
@@ -391,26 +396,37 @@ export default function AdminPage() {
               הוספת זיכרון לחייל
             </h2>
             <form onSubmit={handleAddMemory} className="space-y-6">
-              {/* Soldier Selection */}
+              {/* Soldier Name (FREE TEXT) */}
               <div>
-                <label htmlFor="soldier_id" className="block text-sm font-medium text-gray-700 mb-2">
-                  בחירת חייל *
+                <label htmlFor="soldier_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  שם החייל *
                 </label>
-                <select
-                  id="soldier_id"
-                  name="soldier_id"
-                  value={memoryForm.soldier_id}
+                <input
+                  type="text"
+                  id="soldier_name"
+                  name="soldier_name"
+                  value={memoryForm.soldier_name}
                   onChange={handleMemoryInputChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">בחר חייל</option>
-                  {soldiers.map(soldier => (
-                    <option key={soldier.id} value={soldier.id}>
-                      {soldier.name}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="לדוגמה: דוד כהן"
+                />
+              </div>
+
+              {/* Unit (optional) */}
+              <div>
+                <label htmlFor="unit" className="block text-sm font-medium text-gray-700 mb-2">
+                  יחידה (אופציונלי)
+                </label>
+                <input
+                  type="text"
+                  id="unit"
+                  name="unit"
+                  value={memoryForm.unit}
+                  onChange={handleMemoryInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="לדוגמה: גולני / צנחנים / 8200"
+                />
               </div>
 
               {/* Author Name */}
@@ -482,4 +498,3 @@ export default function AdminPage() {
     </div>
   )
 }
-
